@@ -50,9 +50,15 @@
     .modal { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:28px; width:400px; }
     .modal input { width:100%; padding:10px; margin:15px 0; background:var(--bg); border:1px solid var(--border); color:#fff; }
     @media (max-width:900px) { .kpi-grid { grid-template-columns:repeat(2,1fr); } }
+    #counter { position: fixed; bottom: 15px; right: 15px; z-index: 1000; display: none; cursor: pointer; }
+    #counter:hover { transform: scale(1.05); }
   </style>
 </head>
 <body>
+
+<div id="counter" title="클릭 시 데이터 갱신" onclick="location.reload()">
+  <img src="https://hits.sh/ecos-dashboard-hyeonil.svg?label=방문자&color=58a6ff&labelColor=30363d" alt="Views"/>
+</div>
 
 <div class="modal-bg" id="modalBg">
   <div class="modal">
@@ -265,6 +271,33 @@ function saveKey() {
 
 document.getElementById('todayEl').textContent = new Date().toLocaleDateString();
 Chart.defaults.color = '#8b949e';
+
+// Secret way to toggle counter: Click "경제지표 대시보드" 7 times
+let cClicks = 0;
+let cTimer;
+const titleEl = document.querySelector('header h1');
+if (titleEl) {
+  titleEl.onclick = () => {
+    clearTimeout(cTimer);
+    cClicks++;
+    if (cClicks === 7) {
+      const show = localStorage.getItem('showCounter') === 'true';
+      localStorage.setItem('showCounter', !show);
+      const cEl = document.getElementById('counter');
+      if (cEl) {
+        cEl.style.display = !show ? 'block' : 'none';
+        alert(`관리자 모드: 카운터가 ${!show ? '활성화' : '비활성화'}되었습니다.`);
+      }
+      cClicks = 0;
+    } else {
+      cTimer = setTimeout(() => { cClicks = 0; }, 2000);
+    }
+  };
+}
+if (localStorage.getItem('showCounter') === 'true') {
+  document.getElementById('counter').style.display = 'block';
+}
+
 loadData();
 </script>
 </body>
