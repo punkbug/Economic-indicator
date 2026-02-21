@@ -148,13 +148,22 @@ async function fetchECOS(statCode, period, startDate, endDate, itemCode) {
   const isSample = (API_KEY === 'sample' || API_KEY.length < 10);
   const rowCount = isSample ? 50 : 1000;
   const targetUrl = `${BASE}/${API_KEY}/json/kr/1/${rowCount}/${statCode}/${period}/${startDate}/${endDate}/${itemCode}`;
-  const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+  
+  // Use a more reliable proxy or direct fetch if possible (some environments allow it)
+  // Trying a different proxy service as corsproxy.io can be unstable
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
 
   try {
     const res = await fetch(proxyUrl);
     if (!res.ok) throw new Error(`데이터 요청 실패 (상태: ${res.status})`);
-    const json = await res.json();
-    if (json.RESULT) throw new Error(json.RESULT.MESSAGE || 'API 응답 오류');
+    const data = await res.json();
+    
+    // allorigins wraps the response in a 'contents' field as a string
+    const json = JSON.parse(data.contents);
+    
+    if (json.RESULT && json.RESULT.CODE !== 'INFO-000') {
+      throw new Error(json.RESULT.MESSAGE || 'API 응답 오류');
+    }
     if (!json.StatisticSearch || !json.StatisticSearch.row) return [];
     return json.StatisticSearch.row.sort((a, b) => a.TIME.localeCompare(b.TIME));
   } catch (e) {
@@ -285,13 +294,25 @@ async function loadData() {
       { name:'CPI', icon:'📊', title:'소비자물가지수', color:'#bc8cff', unit:'pt', data:f(cpi), labels:l(cpi), rawDates:d(cpi) }
     ];
 
+    if (DS.every(d => d.data.length === 0)) {
+      throw new Error('모든 지표의 데이터를 불러오지 못했습니다. API 키를 확인해주세요.');
+    }
+
     renderDashboard();
     badge.className = 'badge ok';
     document.getElementById('badgeTxt').textContent = '정상';
   } catch (e) {
+    console.error('loadData Error:', e);
     badge.className = 'badge error';
     document.getElementById('badgeTxt').textContent = '오류';
-    document.getElementById('app').innerHTML = `<div class="err-box">⚠️ 데이터를 불러오지 못했습니다.<br>원인: ${e.message}<br><br>CORS 프록시 서버 지연이거나 API 키 문제일 수 있습니다. '강력 새로고침(Ctrl+F5)'을 시도해보세요.</div>`;
+    document.getElementById('app').innerHTML = `
+      <div class="err-box">
+        ⚠️ 데이터를 불러오지 못했습니다.<br>
+        원인: ${e.message}<br><br>
+        1. API 키가 정확한지 확인해주세요.<br>
+        2. CORS 프록시 서버 지연일 수 있습니다. '갱신' 버튼을 다시 눌러보세요.<br>
+        3. 인터넷 연결을 확인해주세요.
+      </div>`;
   }
 }
 
