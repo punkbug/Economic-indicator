@@ -14,26 +14,38 @@
       --blue: #58a6ff; --green: #3fb950; --red: #f85149;
       --yellow: #d29922; --purple: #bc8cff;
     }
-    body { font-family: 'Segoe UI', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-    header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-    header h1 { font-size: 19px; font-weight: 700; }
+    [data-theme='light'] {
+      --bg: #f6f8fa; --bg2: #ffffff; --card: #ffffff;
+      --border: #d0d7de; --text: #1f2328; --sub: #656d76;
+      --blue: #0969da; --green: #1a7f37; --red: #d1242f;
+      --yellow: #9a6700; --purple: #8250df;
+    }
+    body { font-family: 'Segoe UI', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.3s, color 0.3s; }
+    header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; transition: background 0.3s, border-color 0.3s; }
+    header h1 { font-size: 19px; font-weight: 700; cursor: pointer; }
     .header-right { display: flex; align-items: center; gap: 12px; }
     .hinfo { font-size: 12px; color: var(--sub); text-align: right; }
     .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
     .badge.ok { background:#1a2d1a; color:var(--green); border:1px solid #2a4a2a; }
+    [data-theme='light'] .badge.ok { background:#dafbe1; border-color:#bbe5c5; }
     .badge.loading { background:#1a2233; color:var(--blue); border:1px solid #2a3a5a; }
+    [data-theme='light'] .badge.loading { background:#ddf4ff; border-color:#c2e7ff; }
     .badge.error { background:#2d1515; color:var(--red); border:1px solid #5a2a2a; }
+    [data-theme='light'] .badge.error { background:#ffebe9; border-color:#ffcfcc; }
     .dot { width:6px; height:6px; border-radius:50%; }
     .badge.loading .dot { border:2px solid var(--blue); border-top-color:transparent; background:transparent; animation: spin .8s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
-    .btn { padding:7px 14px; border-radius:6px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:12px; cursor:pointer; }
+    .btn { padding:7px 14px; border-radius:6px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:12px; cursor:pointer; transition: all 0.2s; }
+    .btn:hover { border-color: var(--sub); }
     .container { max-width:1200px; margin:0 auto; padding:28px 20px; }
     .init-loader { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 20px; gap:16px; }
     .spinner { width:40px; height:40px; border:3px solid var(--border); border-top-color:var(--blue); border-radius:50%; animation:spin .8s linear infinite; }
     .err-box { background:#2d1515; border:1px solid var(--red); border-radius:10px; padding:20px; color:var(--red); font-size:13px; line-height:1.6; }
+    [data-theme='light'] .err-box { background:#ffebe9; }
     .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
     .kpi-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; cursor:pointer; transition:all .2s; border-top:3px solid var(--accent, var(--blue)); }
     .kpi-card.active { background:#1a2230; border-color:var(--accent); }
+    [data-theme='light'] .kpi-card.active { background:#f0f7ff; }
     .kpi-label { font-size:11px; color:var(--sub); margin-bottom:10px; }
     .kpi-value { font-size:27px; font-weight:700; }
     .kpi-change { font-size:12px; margin-top:9px; }
@@ -48,13 +60,13 @@
     .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:999; align-items:center; justify-content:center; }
     .modal-bg.show { display:flex; }
     .modal { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:28px; width:400px; }
-    .modal input { width:100%; padding:10px; margin:15px 0; background:var(--bg); border:1px solid var(--border); color:#fff; }
+    .modal input { width:100%; padding:10px; margin:15px 0; background:var(--bg); border:1px solid var(--border); color:var(--text); }
     @media (max-width:900px) { .kpi-grid { grid-template-columns:repeat(2,1fr); } }
     #counter { position: fixed; bottom: 15px; right: 15px; z-index: 1000; display: none; cursor: pointer; }
     #counter:hover { transform: scale(1.05); }
   </style>
 </head>
-<body>
+<body data-theme="dark">
 
 <div id="counter" title="클릭 시 데이터 갱신" onclick="location.reload()">
   <img src="https://hits.sh/ecos-dashboard-hyeonil.svg?label=방문자&color=58a6ff&labelColor=30363d" alt="Views"/>
@@ -66,7 +78,7 @@
     <input type="text" id="keyInput" placeholder="ECOS API 인증키 입력" />
     <div style="text-align:right">
       <button class="btn" onclick="closeModal()">취소</button>
-      <button class="btn" style="background:var(--blue)" onclick="saveKey()">저장</button>
+      <button class="btn" style="background:var(--blue); color:#fff; border:none;" onclick="saveKey()">저장</button>
     </div>
   </div>
 </div>
@@ -81,6 +93,7 @@
       <strong id="todayEl"></strong>
       <div id="badge" class="badge loading"><span class="dot"></span><span id="badgeTxt">준비 중</span></div>
     </div>
+    <button class="btn" id="themeBtn" onclick="toggleTheme()">🌓 테마 전환</button>
     <button class="btn" onclick="openModal()">🔑 키 설정</button>
     <button class="btn" onclick="loadData()">🔄 갱신</button>
   </div>
@@ -96,6 +109,28 @@
 <script>
 let API_KEY = localStorage.getItem('ecosApiKey') || '0AGD2DT4OUR0LS03IZ4K';
 const BASE = 'https://ecos.bok.or.kr/api/StatisticSearch';
+
+// Theme Management
+function setTheme(theme) {
+  document.body.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  const subColor = getComputedStyle(document.documentElement).getPropertyValue('--sub').trim();
+  const borderColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
+  Chart.defaults.color = subColor;
+  Chart.defaults.borderColor = borderColor;
+  if (DS.length > 0) {
+    renderDashboard();
+  }
+}
+
+function toggleTheme() {
+  const current = document.body.getAttribute('data-theme');
+  setTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+// Initialize theme
+const savedTheme = localStorage.getItem('theme') || 'dark';
+setTheme(savedTheme);
 
 function dateRange(days) {
   const now = new Date();
@@ -270,7 +305,6 @@ function saveKey() {
 }
 
 document.getElementById('todayEl').textContent = new Date().toLocaleDateString();
-Chart.defaults.color = '#8b949e';
 
 // Secret way to toggle counter: Click "경제지표 대시보드" 7 times
 let cClicks = 0;
