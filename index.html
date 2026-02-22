@@ -62,6 +62,7 @@
     .modal-bg.show { display:flex; }
     .modal { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:28px; width:400px; }
     .modal input { width:100%; padding:10px; margin:15px 0; background:var(--bg); border:1px solid var(--border); color:var(--text); }
+    input:focus, textarea:focus { border-color: var(--blue) !important; outline: none; }
     @media (max-width:900px) { .kpi-grid { grid-template-columns:repeat(2,1fr); } }
     #counter { position: fixed; bottom: 15px; right: 15px; z-index: 1000; display: none; cursor: pointer; }
     #counter:hover { transform: scale(1.05); }
@@ -95,6 +96,7 @@
       <div id="badge" class="badge loading"><span class="dot"></span><span id="badgeTxt">준비 중</span></div>
     </div>
     <button class="btn" id="themeBtn" onclick="toggleTheme()">🌓 테마 전환</button>
+    <button class="btn" onclick="location.href='#contact'">🤝 제휴 문의</button>
     <button class="btn" onclick="openModal()">🔑 키 설정</button>
     <button class="btn" onclick="loadData()">🔄 갱신</button>
   </div>
@@ -106,6 +108,39 @@
     <div class="load-txt">데이터를 불러오는 중입니다...</div>
   </div>
 </div>
+
+<section id="contact" style="max-width:1200px; margin:40px auto; padding:0 20px;">
+  <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:32px; border-top:3px solid var(--purple);">
+    <h3 style="margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+      <span style="font-size:24px;">🤝</span> 제휴 및 서비스 문의
+    </h3>
+    <p style="font-size:13px; color:var(--sub); margin-bottom:24px;">대시보드 활용 제휴나 기타 문의사항이 있으시면 아래 폼을 통해 연락주세요.</p>
+    
+    <form action="https://formspree.io/f/mreayogl" method="POST" style="display:flex; flex-direction:column; gap:16px;">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:16px;">
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label style="font-size:12px; font-weight:600; color:var(--sub);">성함 또는 기업명</label>
+          <input type="text" name="name" required placeholder="예: 홍길동 (주식회사 에코)" 
+            style="padding:10px; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; outline:none; transition:border-color 0.2s;">
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label style="font-size:12px; font-weight:600; color:var(--sub);">회신받을 이메일</label>
+          <input type="email" name="_replyto" required placeholder="example@domain.com" 
+            style="padding:10px; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; outline:none; transition:border-color 0.2s;">
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <label style="font-size:12px; font-weight:600; color:var(--sub);">문의 내용</label>
+        <textarea name="message" required placeholder="제휴 제안이나 궁금한 점을 자유롭게 적어주세요." 
+          style="padding:12px; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; min-height:120px; resize:vertical; outline:none; transition:border-color 0.2s; font-family:inherit;"></textarea>
+      </div>
+      <div style="display:flex; justify-content: flex-end; align-items:center; gap:16px; margin-top:8px;">
+        <span style="font-size:11px; color:var(--sub);">Formspree를 통해 안전하게 전달됩니다.</span>
+        <button type="submit" class="btn" style="background:var(--blue); color:white; border:none; padding:10px 24px; font-weight:600; font-size:14px;">보내기</button>
+      </div>
+    </form>
+  </div>
+</section>
 
 <script>
 // Use a session variable instead of hardcoded key for better security
